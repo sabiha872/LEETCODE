@@ -1,29 +1,34 @@
 class Solution {
 public:
     bool checkValidString(string s) {
-        int minOpen = 0;
-        int maxOpen = 0;
+        int n = s.size();
 
-        for(char c : s) {
-            if(c == '(') {
-                minOpen++;
-                maxOpen++;
+        vector<vector<bool>> dp(n+1, vector<bool>(n+1, false));
 
-            }
-            else if(c == ')') {
-                minOpen--;
-                maxOpen--;
-            }
-            else {
-                minOpen--;
-                maxOpen++;
-            }
-            minOpen = max(0, minOpen);
+        dp[0][0] = true;
+        for(int i = 0; i < n; i++) {
+            for(int open = 0; open <= n; open++) {
+                if(dp[i][open] == false)
+                  continue;
 
-            if (maxOpen < 0) {
-                return false;
+                if(s[i] == '(') {
+                    dp[i+1][open + 1] = true;
+                }
+                else if(s[i] == ')') {
+                    if(open > 0) {
+                        dp[i + 1][open - 1] = true;
+                    }
+                }
+                else {
+                dp[i + 1][open + 1] = true;
+                if(open > 0) {
+                    dp[i + 1][open - 1] = true;
+                }
+                dp[i + 1][open] = true;
             }
         }
-        return minOpen == 0;
+        
     }
+    return dp[n][0];
+  }
 };
